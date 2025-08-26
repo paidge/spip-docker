@@ -2,7 +2,7 @@
 
 ## 1. Cloner le projet
 
-`git clone <url_du_depot>`
+`git clone https://github.com/paidge/spip-docker`
 
 ## 2. Lancez l'installation (nouveau dépôt git et variables d'environnement)
 
