@@ -1,0 +1,25 @@
+services:
+  mysql:
+    image: mariadb:11.4
+    restart: always
+    env_file:
+      - ./.env
+    volumes:
+      - ./data:/var/lib/mysql
+
+  spip:
+    image: ipeos/spip:4.4
+    restart: always
+    depends_on:
+      - mysql
+    env_file:
+      - ./.env
+    ports:
+      - 8880:80
+    volumes:
+      - ./config:/var/www/html/config/
+      - ./plugins:/var/www/html/plugins
+      - ./squelettes:/var/www/html/squelettes
+      - ./IMG:/var/www/html/IMG
+      - ./tmp:/var/www/html/tmp
+      - ./local:/var/www/html/local
