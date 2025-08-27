@@ -1,30 +1,49 @@
 # Boilerplate SPIP avec docker-compose
 
-## 1. Cloner le projet
+## 1. Développement
 
-`git clone https://github.com/paidge/spip-docker`
+### 1. Initialiser le projet
 
-## 2. Lancez l'installation (nouveau dépôt git et variables d'environnement)
+`git clone https://github.com/paidge/spip-docker && cd spip-docker && ./init.sh`
 
-`cd spip-docker && ./install.sh`
+Le script supprimera le dossier `.git` puis vous demandera si vous souhaitez versionner votre projet avec git.
+Ensuite, il vous demandera si vous souhaitez personnaliser les variables d'environnement et lancer le docker-compose.
 
-## 3. Installer les plugins en tant que submodules et développer ses squelettes
+### 2. Installer les plugins en tant que submodules et développer ses squelettes
 
 `git submodule add <url_depot_plugin> plugins/<nom_plugin>`
 
-## 4. Mettre à jour le nouveau dépôt
+Ceci vous permettra de mettre à jour facilement vos plugins et d'éviter de surcharger votre nouveau dépôt git avec le code des plugins tout en versionnant vos squelettes.
+
+## 2. Mise en production
+
+### 1. Mettre à jour le nouveau dépôt (si existant)
 
 `git commit && git push`
 
-## 5. Récupérer le projet en production
+### 2. Récupérer le projet en production
 
 `git clone --recursive <url_du_nouveau_depot>`
 
-## 8. Sauvegarde de la BDD
+## 3. Mise à jour de SPIP et de ses plugins
+
+### 1. Mise à jour de SPIP
+
+1. Sauvegarder de la base de données
+2. Mettre à jour la version de l'image utilisée dans le docker-compose.yml
+3. Redémarrer les containers : `docker-compose down && docker-compose up -d`
+
+### 2. Mise à jour des plugins
+
+`git submodule update --remote`
+
+## 4. Sauvegarde et restauration de la base de données
+
+### 1. Sauvegarde de la BDD
 
 `docker exec <mon_projet>-mysql-1 mariadb-dump -u spip -pspip spip > backup.sql`
 
-## 9. Restauration de la BDD
+### 2. Restauration de la BDD
 
 `docker exec <mon_projet>-mysql-1 mariadb -u spip -pspip spip < backup.sql`
 

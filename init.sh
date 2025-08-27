@@ -19,26 +19,27 @@ if [ -d ".git" ]; then
 fi
 
 # Demander si on veut ajouter un nouveau dépôt git
-while true; do
-    read -p "Quelle est l'URL du nouveau dépôt git ? [none] " URL_NOUVEAU_DEPOT
-    URL_NOUVEAU_DEPOT=${URL_NOUVEAU_DEPOT:-none}
+echo "⚙️ Voulez-vous versionner votre projet avec git ? (o/n)"
+read -r REPONSE
 
-    if [ "$URL_NOUVEAU_DEPOT" = "none" ]; then
-        break
-    fi
+if [[ "$REPONSE" =~ ^[Oo]$ ]]; then
+    while true; do
+        read -p "Quelle est l'URL du nouveau dépôt git ? " URL_NOUVEAU_DEPOT
 
-    if [[ "$URL_NOUVEAU_DEPOT" =~ ^(https://.*\.git|git@.*:.*\.git)$ ]]; then
-        echo "🔄 Initialisation d'un nouveau dépôt git..."
-        git init
-        git remote add origin "$URL_NOUVEAU_DEPOT"
-        break
-    else
-        echo "❌ L'URL fournie n'est pas valide. Elle doit ressembler à :"
-        echo "   - https://exemple.com/mon-projet.git"
-        echo "   - git@exemple.com:mon-projet.git"
-        echo "Veuillez réessayer."
-    fi
-done
+        if [[ "$URL_NOUVEAU_DEPOT" =~ ^(https://.*\.git|git@.*:.*\.git)$ ]]; then
+            echo "🔄 Initialisation d'un nouveau dépôt git..."
+            git init
+            git remote add origin "$URL_NOUVEAU_DEPOT"
+            git add .
+            break
+        else
+            echo "❌ L'URL fournie n'est pas valide. Elle doit ressembler à :"
+            echo "   - https://exemple.com/mon-projet.git"
+            echo "   - git@exemple.com:mon-projet.git"
+            echo "Veuillez réessayer."
+        fi
+    done
+fi
 
 SPIP_SITE_ADDRESS=http://localhost:8880
 
@@ -136,7 +137,30 @@ else
     echo "ℹ️ Personnalisation ignorée, le fichier .env existant reste inchangé."
 fi
 
+# Vérifier que Docker est lancé
+if ! docker info >/dev/null 2>&1; then
+    echo "⚠️ Docker n'est pas encore démarré. Attente..."
+    # Boucle d'attente (max 60 secondes)
+    for i in {1..30}; do
+        if docker info >/dev/null 2>&1; then
+            echo "✅ Docker est démarré."
+            break
+        fi
+        echo "⏳ Tentative $i/30..."
+        sleep 2
+    done
+fi
+
+# Si Docker n'est toujours pas dispo après la boucle
+if ! docker info >/dev/null 2>&1; then
+    echo "❌ Docker ne semble pas démarré après 60s. Abandon."
+    exit 1
+fi
+
 echo "🚀 Lancement de docker-compose"
-docker-compose up -d
+docker-compose up -d || {
+    echo "❌ Échec du lancement de docker-compose."
+    exit 1
+}
 
 echo "🚀 Votre site est accessible sur $SPIP_SITE_ADDRESS"
