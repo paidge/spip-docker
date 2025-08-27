@@ -7,7 +7,7 @@
 `git clone https://github.com/paidge/spip-docker && cd spip-docker && ./init.sh`
 
 Le script supprimera le dossier `.git` puis vous demandera si vous souhaitez versionner votre projet avec git.
-Ensuite, il vous demandera si vous souhaitez personnaliser les variables d'environnement et lancer le docker-compose.
+Ensuite, il vous demandera si vous souhaitez personnaliser les variables d'environnement et lancera le docker-compose.
 
 ### 2. Installer les plugins en tant que submodules et développer ses squelettes
 
@@ -29,7 +29,7 @@ Ceci vous permettra de mettre à jour facilement vos plugins et d'éviter de sur
 
 ### 1. Mise à jour de SPIP
 
-1. Sauvegarder de la base de données
+1. Sauvegarder la base de données
 2. Mettre à jour la version de l'image utilisée dans le docker-compose.yml
 3. Redémarrer les containers : `docker-compose down && docker-compose up -d`
 
@@ -47,4 +47,4 @@ Ceci vous permettra de mettre à jour facilement vos plugins et d'éviter de sur
 
 `docker exec <mon_projet>-mysql-1 mariadb -u spip -pspip spip < backup.sql`
 
-**Remerciements :** Le présent dépôt utilise [l'image Docker de SPIP créée par IPEOS](https://github.com/ipeos-and-co/docker-spip)
+_**Remerciements :** Le présent dépôt utilise [l'image Docker de SPIP créée par IPEOS](https://github.com/ipeos-and-co/docker-spip)_
