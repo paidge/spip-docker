@@ -1,11 +1,5 @@
 #!/bin/bash
 
-# Vérifier que git est installé
-if ! command -v git &> /dev/null; then
-    echo "❌ git n'est pas installé. Veuillez l'installer et réessayer."
-    exit 1
-fi
-
 # Vérifier que docker-compose est installé
 if ! command -v docker-compose &> /dev/null; then
     echo "❌ docker-compose n'est pas installé. Veuillez l'installer et réessayer."
@@ -23,6 +17,13 @@ echo "⚙️ Voulez-vous versionner votre projet avec git ? (o/n)"
 read -r REPONSE
 
 if [[ "$REPONSE" =~ ^[Oo]$ ]]; then
+    # Vérifier que git est installé
+    if ! command -v git &> /dev/null; then
+        echo "❌ git n'est pas installé. Veuillez l'installer et réessayer."
+        exit 1
+    fi
+
+    # Initialisation du dépôt git
     while true; do
         read -p "Quelle est l'URL du nouveau dépôt git ? " URL_NOUVEAU_DEPOT
 

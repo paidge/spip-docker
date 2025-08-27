@@ -6,7 +6,7 @@ Architecture Docker avec script d'initialisation d'un nouveau projet SPIP.
 
 ### 1. Initialiser le projet
 
-`git clone https://github.com/paidge/spip-docker && cd spip-docker && ./init.sh`
+`git clone https://github.com/paidge/spip-docker && spip-docker/init.sh`
 
 Le script supprimera le dossier `.git` puis vous demandera si vous souhaitez versionner votre projet avec git.
 Ensuite, il vous demandera si vous souhaitez personnaliser les variables d'environnement et lancera le docker-compose.
