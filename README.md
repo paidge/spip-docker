@@ -1,6 +1,8 @@
 # Boilerplate SPIP avec docker-compose
 
-## 1. Développement
+Architecture Docker avec script d'initialisation d'un nouveau projet SPIP.
+
+## 1. Développement de votre projet
 
 ### 1. Initialiser le projet
 
@@ -17,15 +19,15 @@ Ceci vous permettra de mettre à jour facilement vos plugins et d'éviter de sur
 
 ## 2. Mise en production
 
-### 1. Mettre à jour le nouveau dépôt (si existant)
+### 1. Mettre à jour votre nouveau dépôt (si existant)
 
 `git commit && git push`
 
 ### 2. Récupérer le projet en production
 
-`git clone --recursive <url_du_nouveau_depot>`
+`git clone --recursive <url_du_depot> && cd <dossier> && docker-compose up -d`
 
-## 3. Mise à jour de SPIP et de ses plugins
+## 3. Mise à jour de votre projet
 
 ### 1. Mise à jour de SPIP
 
