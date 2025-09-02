@@ -6,52 +6,46 @@ if ! command -v docker-compose &> /dev/null; then
     exit 1
 fi
 
-# Supprimer le dépôt git
-if [ -d ".git" ]; then
-    echo "🗑 Suppression de l'ancien dépôt git..."
-    rm -rf .git
-fi
+if [ ! -f ".env" ]; then
+    echo "⚙️ Voulez-vous versionner votre projet avec git ? (o/n)"
+    read -r REPONSE
 
-# Demander si on veut ajouter un nouveau dépôt git
-echo "⚙️ Voulez-vous versionner votre projet avec git ? (o/n)"
-read -r REPONSE
+    if [[ "$REPONSE" =~ ^[Oo]$ ]]; then
+        # Vérifier que git est installé
+        if ! command -v git &> /dev/null; then
+            echo "❌ git n'est pas installé. Veuillez l'installer et réessayer."
+            exit 1
+        fi
 
-if [[ "$REPONSE" =~ ^[Oo]$ ]]; then
-    # Vérifier que git est installé
-    if ! command -v git &> /dev/null; then
-        echo "❌ git n'est pas installé. Veuillez l'installer et réessayer."
-        exit 1
+        # Supprimer le dépôt git
+        if [ -d ".git" ]; then
+            echo "🗑 Suppression de l'ancien dépôt git..."
+            rm -rf .git
+        fi
+
+        # Initialisation du dépôt git
+        while true; do
+            read -p "Quelle est l'URL du nouveau dépôt git ? " URL_NOUVEAU_DEPOT
+
+            if [[ "$URL_NOUVEAU_DEPOT" =~ ^(https://.*\.git|git@.*:.*\.git)$ ]]; then
+                echo "🔄 Initialisation d'un nouveau dépôt git..."
+                git init
+                git remote add origin "$URL_NOUVEAU_DEPOT"
+                git add .
+                break
+            else
+                echo "❌ L'URL fournie n'est pas valide. Elle doit ressembler à :"
+                echo "   - https://exemple.com/mon-projet.git"
+                echo "   - git@exemple.com:mon-projet.git"
+                echo "Veuillez réessayer."
+            fi
+        done
     fi
 
-    # Initialisation du dépôt git
-    while true; do
-        read -p "Quelle est l'URL du nouveau dépôt git ? " URL_NOUVEAU_DEPOT
 
-        if [[ "$URL_NOUVEAU_DEPOT" =~ ^(https://.*\.git|git@.*:.*\.git)$ ]]; then
-            echo "🔄 Initialisation d'un nouveau dépôt git..."
-            git init
-            git remote add origin "$URL_NOUVEAU_DEPOT"
-            git add .
-            break
-        else
-            echo "❌ L'URL fournie n'est pas valide. Elle doit ressembler à :"
-            echo "   - https://exemple.com/mon-projet.git"
-            echo "   - git@exemple.com:mon-projet.git"
-            echo "Veuillez réessayer."
-        fi
-    done
-fi
+    SPIP_SITE_ADDRESS=http://localhost:8880
 
-SPIP_SITE_ADDRESS=http://localhost:8880
-
-echo "⚙️ Voulez-vous personnaliser les variables d'environnement ? (o/n)"
-read -r REPONSE
-
-if [[ "$REPONSE" =~ ^[Oo]$ ]]; then
-    echo "🗑 Suppression de l'ancien fichier .env..."
-    rm -f .env
-
-    echo "✍️  Configuration du nouveau fichier .env"
+    echo "✍️  Configuration du fichier .env"
 
     read -p "MYSQL_ROOT_PASSWORD [MysqlRootPassword]: " MYSQL_ROOT_PASSWORD
     MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-MysqlRootPassword}
@@ -133,9 +127,7 @@ PHP_UPLOAD_MAX_FILESIZE=$PHP_UPLOAD_MAX_FILESIZE
 PHP_TIMEZONE=$PHP_TIMEZONE
 EOF
 
-    echo "✅ Nouveau fichier .env généré."
-else
-    echo "ℹ️ Personnalisation ignorée, le fichier .env existant reste inchangé."
+    echo "✅ Fichier .env généré."
 fi
 
 # Vérifier que Docker est lancé
