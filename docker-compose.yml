@@ -1,6 +1,6 @@
 services:
   mysql:
-    image: mariadb:11.4
+    image: mariadb:11.8
     restart: always
     env_file:
       - ./.env
@@ -8,7 +8,7 @@ services:
       - ./data:/var/lib/mysql
 
   spip:
-    image: ipeos/spip:4.4
+    image: ipeos/spip:latest
     restart: always
     depends_on:
       - mysql
